@@ -30,3 +30,7 @@ MVP personal y read-only:
 - La private key, session ID y `CRON_SECRET` viven únicamente en variables de entorno de Vercel.
 - El endpoint financiero está protegido.
 - La aplicación está restringida a las cuentas propias enlazadas en Enable Banking.
+
+## Producción
+
+El despliegue de producción debe incluir el fix de deduplicación de cuentas/transacciones y exclusión de traslados internos del cálculo de ingresos y gastos.
