@@ -2,33 +2,31 @@
 
 MVP personal y read-only:
 
-**Revolut → Enable Banking → resumen → email → ChatGPT**
+**Revolut → Enable Banking → Archic Finance → ChatGPT**
 
-## Configuración
+## Configuración actual
 
-1. Crea una aplicación en Enable Banking para uso personal/restringido.
-2. Despliega este repo en Vercel.
-3. Añade estas variables de entorno:
-   - `ENABLE_BANKING_APP_ID`
+1. Aplicación Enable Banking en producción restringida para cuentas propias.
+2. Revolut enlazado mediante Account Information (AIS / read-only).
+3. Proyecto desplegado en Vercel.
+4. Variables privadas necesarias en Vercel:
    - `ENABLE_BANKING_PRIVATE_KEY`
-   - `APP_URL`
-   - `RESEND_API_KEY`
-   - `REPORT_FROM`
-   - `REPORT_TO`
+   - `ENABLE_BANKING_SESSION_ID`
    - `CRON_SECRET`
-4. Deja `ENABLE_BANKING_SESSION_ID` vacío inicialmente.
-5. Abre `https://TU-PROYECTO.vercel.app/api/connect` desde el iPhone donde tienes Revolut.
-6. Autoriza el acceso de solo lectura.
-7. El callback mostrará un `session_id`; guárdalo en Vercel como `ENABLE_BANKING_SESSION_ID` y redeploy.
+5. El endpoint `/api/summary` devuelve un resumen financiero protegido por `CRON_SECRET`.
+6. ChatGPT usa ese resumen para la revisión financiera semanal.
+
+## Tratamiento de datos
+
+- Solo lectura: no inicia pagos ni transferencias.
+- No guarda usuario ni contraseña de Revolut.
+- No mantiene una base de datos histórica de transacciones.
+- Deduplica cuentas y movimientos repetidos antes de calcular métricas.
+- Traslados internos identificables, como movimientos hacia Flexible Cash Funds, no se contabilizan como gasto ordinario.
+- El saldo bancario puede no incluir productos de inversión o ahorro que Open Banking no exponga como cuenta bancaria.
 
 ## Seguridad
 
-- Solo lectura (AIS).
-- Sin pagos ni transferencias.
-- No guarda usuario ni contraseña de Revolut.
-- No almacena transacciones en una base de datos.
-- Los secretos viven solo en variables de entorno de Vercel.
-
-## Automatización
-
-Vercel ejecuta `/api/report` cada domingo. El correo enviado usa el asunto `[Finance Weekly] ...`, para que ChatGPT pueda localizarlo y analizarlo automáticamente.
+- La private key, session ID y `CRON_SECRET` viven únicamente en variables de entorno de Vercel.
+- El endpoint financiero está protegido.
+- La aplicación está restringida a las cuentas propias enlazadas en Enable Banking.
